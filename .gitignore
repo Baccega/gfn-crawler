@@ -10,5 +10,6 @@ results/
 fullUrls.txt
 validIds.txt
 filteredUrls.txt
+failedUrls.txt
 testUrls.txt
 .env
