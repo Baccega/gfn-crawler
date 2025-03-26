@@ -23,6 +23,11 @@ export async function getDiscountedPrice(page: Page, url: string) {
     return [codice.substring(7), ...rows2.split("\n")];
   }
 
-  const text = await rows[0].innerText();
-  return [codice.substring(7), ...splitText(text)];
+  const firstRow = await rows[0].innerText();
+  const secondRow = rows[1] ? await rows[1].innerText() : "";
+  return [
+    codice.substring(7),
+    ...splitText(firstRow),
+    ...splitText(secondRow).filter(Boolean),
+  ];
 }

@@ -25,13 +25,19 @@ import { getDiscountedPrice } from "./getDiscoutedPrice.ts";
 
   console.log("logged in");
 
+
   const one = await getDiscountedPrice(page, process.env.TEST_URL_OSC);
-  const two = await getDiscountedPrice(page, process.env.TEST_URL_2_OSC);
+  console.log("one done");
+  // Two case is filtered out
+  // const two = await getDiscountedPrice(page, process.env.TEST_URL_2_OSC);
+  // console.log("two done");
   const three = await getDiscountedPrice(page, process.env.TEST_URL_3_OSC);
+  console.log("three done");
   const four = await getDiscountedPrice(page, process.env.TEST_URL_4_OSC);
+  console.log("four done");
 
   console.log(one);
-  console.log(two);
+  // console.log(two);
   console.log(three);
   console.log(four);
 

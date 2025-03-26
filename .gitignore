@@ -6,8 +6,9 @@ node_modules/
 /blob-report/
 /playwright/.cache/
 
-discounted_prices.csv
+results/
 fullUrls.txt
 validIds.txt
 filteredUrls.txt
+testUrls.txt
 .env

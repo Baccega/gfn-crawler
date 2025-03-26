@@ -24,7 +24,7 @@ const processBatch = async (page, urls: string[]) => {
         console.log(`No discounted price found for ${url}`);
         continue;
       }
-      const line = `${url};${discountedPrice[0]};${discountedPrice[1]};${discountedPrice[2]};${discountedPrice[3]}`;
+      const line = `${url};${discountedPrice[0]};${discountedPrice[1]};${discountedPrice[2]};${discountedPrice[3]};${discountedPrice[4]};${discountedPrice[5]};${discountedPrice[6]}`; 
       results.push(line);
       console.log(`Processed: ${url}`);
       await wait(200);
@@ -51,7 +51,7 @@ const processBatch = async (page, urls: string[]) => {
   if (!fs.existsSync(CSV_FILE)) {
     fs.writeFileSync(
       CSV_FILE,
-      "URL;Codice;APartireDa;PrezzoUnitario;PrezzoPerPz\n"
+      "URL;Codice;APartireDa;PrezzoUnitario;PrezzoPerPz;APartireDa2;PrezzoUnitario2;PrezzoPerPz2\n"
     );
   }
 

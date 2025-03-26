@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "main-osc": "node osc/main.ts"
+    "main-osc": "node osc/main.ts",
+    "test-osc": "node osc/test.ts"
   },
   "type": "module",
   "keywords": [],
