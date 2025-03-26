@@ -5,12 +5,11 @@ import { getDiscountedPrice } from "./getDiscoutedPrice.ts";
 import fs from "fs";
 import { readUrlsFromFile, wait } from "./utils.ts";
 
-const BATCH_SIZE = 100;
+const BATCH_SIZE = 500;
 const RESULTS_CSV_FILE = "discounted_prices.csv";
 const FAILED_FILE = "failedUrls.txt";
-// const FILE_PATH = "fullUrls.txt";
-// const FILE_PATH = "filteredUrls.txt";
-const FILE_PATH = "testUrls.txt";
+const FILE_PATH = "filteredUrls.txt";
+// const FILE_PATH = "testUrls.txt";
 
 const writeToCsv = (data: string[]) => {
   fs.appendFileSync(RESULTS_CSV_FILE, data.join("\n") + "\n");
@@ -60,12 +59,6 @@ const processBatch = async (page, urls: string[]) => {
     console.log(`Processing batch ${Math.floor(i / BATCH_SIZE) + 1}...`);
     await processBatch(page, batch);
     console.log(`Batch ${Math.floor(i / BATCH_SIZE) + 1} completed.`);
-
-    // Wait for user confirmation before processing the next batch (for manual verification)
-    await new Promise((resolve) => {
-      process.stdout.write("Press Enter to continue to the next batch...");
-      process.stdin.once("data", () => resolve(true));
-    });
   }
 
   await logout(page);
