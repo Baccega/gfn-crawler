@@ -5,7 +5,7 @@ import { getDiscountedPrice } from "./getDiscoutedPrice.ts";
 import fs from "fs";
 import { readUrlsFromFile, wait } from "./utils.ts";
 
-const BATCH_SIZE = 500;
+const BATCH_SIZE = 100;
 const RESULTS_CSV_FILE = "discounted_prices.csv";
 const FAILED_FILE = "failedUrls.txt";
 const FILE_PATH = "filteredUrls.txt";
@@ -15,19 +15,24 @@ const writeToCsv = (data: string[]) => {
   fs.appendFileSync(RESULTS_CSV_FILE, data.join("\n") + "\n");
 };
 
-const processBatch = async (page, urls: string[]) => {
+const processBatch = async (page, urls: string[], batchIndex: number) => {
   const results: string[] = [];
 
   for (let i = 0; i < urls.length; i++) {
-    const url = urls[i];
-    const discountedPrice = await getDiscountedPrice(page, url);
-    if (!discountedPrice) {
-      fs.appendFileSync(FAILED_FILE, url + "\n");
+    try {
+      const url = urls[i];
+      const discountedPrice = await getDiscountedPrice(page, url);
+      if (!discountedPrice) {
+        fs.appendFileSync(FAILED_FILE, url + "\n");
+        continue;
+      }
+      const line = `${url};${discountedPrice[0]};${discountedPrice[1]};${discountedPrice[2]};${discountedPrice[3]};${discountedPrice[4]};${discountedPrice[5]};${discountedPrice[6]}`;
+      results.push(line);
+      console.log(`Processed (${batchIndex * BATCH_SIZE + i + 1}): ${url}`);
+    } catch (error) {
+      console.log(`Error processing ${urls[i]}`);
       continue;
     }
-    const line = `${url};${discountedPrice[0]};${discountedPrice[1]};${discountedPrice[2]};${discountedPrice[3]};${discountedPrice[4]};${discountedPrice[5]};${discountedPrice[6]}`;
-    results.push(line);
-    console.log(`Processed (${i + 1}/${urls.length}): ${url}`);
     await wait(200);
   }
 
@@ -57,7 +62,7 @@ const processBatch = async (page, urls: string[]) => {
   for (let i = 0; i < urls.length; i += BATCH_SIZE) {
     const batch = urls.slice(i, i + BATCH_SIZE);
     console.log(`Processing batch ${Math.floor(i / BATCH_SIZE) + 1}...`);
-    await processBatch(page, batch);
+    await processBatch(page, batch, i);
     console.log(`Batch ${Math.floor(i / BATCH_SIZE) + 1} completed.`);
   }
 
