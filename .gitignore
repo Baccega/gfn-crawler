@@ -7,9 +7,12 @@ node_modules/
 /playwright/.cache/
 
 results/
+discounted_prices.csv
 fullUrls.txt
 validIds.txt
 filteredUrls.txt
 failedUrls.txt
 testUrls.txt
 .env
+
+.DS_Store
