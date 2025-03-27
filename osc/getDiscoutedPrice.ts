@@ -8,9 +8,8 @@ export async function getDiscountedPrice(page: Page, url: string) {
   try {
     await page.goto(url);
     const codice = await page
-      .getByRole("heading", { name: "CODICE" })
+      .locator("#ctl00_cpholder_ctl00_singleItemTitle > h3")
       .innerText();
-
     const rows = await page
       .locator(
         '//*[@id="ctl00_cpholder_ctl00_salespricesctl_puom"]/table[2]/tbody/tr'

@@ -15,6 +15,19 @@ const writeToCsv = (data: string[]) => {
   fs.appendFileSync(RESULTS_CSV_FILE, data.join("\n") + "\n");
 };
 
+const getProcessedUrls = (): Set<string> => {
+  const processedUrls = new Set<string>();
+  if (fs.existsSync(RESULTS_CSV_FILE)) {
+    const fileContent = fs.readFileSync(RESULTS_CSV_FILE, "utf8");
+    const lines = fileContent.split("\n").slice(1); // Skip header
+    lines.forEach((line) => {
+      const columns = line.split(";");
+      if (columns[0]) processedUrls.add(columns[0]);
+    });
+  }
+  return processedUrls;
+};
+
 const processBatch = async (page, urls: string[], batchIndex: number) => {
   const results: string[] = [];
 
@@ -28,7 +41,7 @@ const processBatch = async (page, urls: string[], batchIndex: number) => {
       }
       const line = `${url};${discountedPrice[0]};${discountedPrice[1]};${discountedPrice[2]};${discountedPrice[3]};${discountedPrice[4]};${discountedPrice[5]};${discountedPrice[6]}`;
       results.push(line);
-      console.log(`Processed (${batchIndex * BATCH_SIZE + i + 1}): ${url}`);
+      console.log(`Processed (${batchIndex + i}): ${url}`);
     } catch (error) {
       console.log(`Error processing ${urls[i]}`);
       continue;
@@ -41,7 +54,14 @@ const processBatch = async (page, urls: string[], batchIndex: number) => {
 };
 
 (async () => {
-  const urls = await readUrlsFromFile(FILE_PATH);
+  const allUrls = await readUrlsFromFile(FILE_PATH);
+  const processedUrls = getProcessedUrls();
+  const urls = allUrls.filter((url) => !processedUrls.has(url));
+
+  if (urls.length === 0) {
+    console.log("No new URLs to process.");
+    return;
+  }
 
   const browser = await chromium.launch();
   const context = await browser.newContext(devices["Desktop Chrome"]);
